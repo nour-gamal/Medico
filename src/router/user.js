@@ -2,7 +2,7 @@ const express = require("express");
 const User = require("../models/User");
 const userRouter = new express.Router();
 
-userRouter.post("/user/test", async (req, res) => {
+userRouter.post("/user/test1", async (req, res) => {
 	const data = {
 		name: "nour",
 		age: 23,

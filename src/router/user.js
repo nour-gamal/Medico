@@ -12,7 +12,7 @@ userRouter.post("/user/test", async (req, res) => {
 		await userr.save();
 		res.status(201).send({ message: "saved" });
 	} catch (err) {
-		res.status(404).send({
+		res.status(401).send({
 			err: err.message,
 		});
 		console.log(err);

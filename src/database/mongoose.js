@@ -1,9 +1,10 @@
+const express = require("express");
 const mongoose = require("mongoose");
+const app = express();
+const MONGODB_URL = process.env.MONGODB_URL;
+const PORT = process.env.PORT;
 mongoose
-	.connect(process.env.MONGODB_URL, {
-		useNewUrlParser: true,
-		useUnifiedTopology: true,
-	})
+	.connect(MONGODB_URL)
 	.then(() =>
 		app.listen(process.env.PORT, () =>
 			console.log(`Server Running on Port: ${PORT}`)

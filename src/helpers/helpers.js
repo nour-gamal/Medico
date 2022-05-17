@@ -9,9 +9,10 @@ const getSelectedProperties = (originalObject, removedParameters, addedParameter
     }
     if (addedParameters) {
         //Added data from object
-        addedParameters.forEach(params => {
-            targetObject[params.key] = params.value
-        })
+        for (let index = 0; index < Object.keys(addedParameters).length; index++) {
+            targetObject[Object.keys(addedParameters)[index]] = Object.values(addedParameters)[index]
+        }
+
     }
     return targetObject;
 }

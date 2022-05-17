@@ -1,9 +1,3 @@
-<<<<<<< HEAD
-const auth = async (req, res, next) => {
-	// const token = req.header("Authorization").split("bearer ")[1];
-	// console.log("token", token);
-	next();
-=======
 const Admin = require('../models/Admin');
 const jwt = require('jsonwebtoken');
 const mongoose = require("mongoose");
@@ -31,7 +25,6 @@ const auth = async (req, res, next) => {
 		res.status(401).send({ code: 401, message: 'Invalid token!' })
 	}
 
->>>>>>> origin/backend
 };
 
 module.exports = auth;

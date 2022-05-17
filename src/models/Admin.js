@@ -1,10 +1,7 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
 const jwt = require("jsonwebtoken");
-<<<<<<< HEAD
-=======
 const bcrypt = require('bcryptjs')
->>>>>>> origin/backend
 const adminSchema = new mongoose.Schema({
 	email: {
 		type: String,
@@ -52,10 +49,6 @@ adminSchema.methods.generateJWTToken = async function () {
 	await user.save();
 	return token;
 };
-<<<<<<< HEAD
-const Admin = mongoose.model("Admin", adminSchema);
-
-=======
 
 
 adminSchema.pre('save', async function (next) {
@@ -67,5 +60,4 @@ adminSchema.pre('save', async function (next) {
 })
 
 const Admin = mongoose.model("Admin", adminSchema);
->>>>>>> origin/backend
 module.exports = Admin;

@@ -58,7 +58,11 @@ adminSchema.statics.adminSignup = async function (body) {
 		const admin = await newAdmin.save();
 		return 1;
 	} catch (error) {
+<<<<<<< HEAD
 		throw new Error()
+=======
+		return error
+>>>>>>> origin/backend
 	}
 }
 
@@ -77,7 +81,10 @@ adminSchema.statics.adminSignin = async function (email, password) {
 		const token = await admin.generateJWTToken();
 		const adminResponse = getSelectedProperties(admin, ['password', 'tokens'], { token })
 		return adminResponse;
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/backend
 	} catch (error) {
 		res.status(400).send({ code: 400, message: 'Invalid login attempt!' })
 	}

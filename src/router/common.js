@@ -1,10 +1,10 @@
 const express = require("express");
-const commonRouter = new express.Router()
-const Admin = require('../models/Admin')
+const commonRouter = new express.Router();
+const Admin = require('../models/Admin');
+const Doctor = require('../models/Doctor');
 const auth = require("../middlewares/auth");
 
-
-commonRouter.post('/signup', async (req, res) => {
+commonRouter.post('/signup', auth, async (req, res) => {
     const { userType } = req.body;
     var status = null;
     try {
@@ -14,10 +14,11 @@ commonRouter.post('/signup', async (req, res) => {
         switch (userType) {
             case 1:
                 status = Admin.adminSignup(req.body);
-                console.log(status.response)
-                if (status !== 1) {
-                    throw new Error(status.message)
-                }
+                if (status !== 1) throw new Error(status.message)
+                break;
+            case 2:
+                status = Doctor.doctorSignup(req.body)
+                if (status !== 1) throw new Error(status.message)
                 break;
             default:
                 throw new Error("Invalid user type!")
@@ -39,7 +40,7 @@ commonRouter.post('/signup', async (req, res) => {
 
 })
 
-commonRouter.post('/signin', async (req, res) => {
+commonRouter.post('/signin', auth, async (req, res) => {
     const { email, password, userType } = req.body;
     const isValidParams = !email || !password || !userType;
     var user = null

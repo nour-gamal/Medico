@@ -36,11 +36,10 @@ const doctorSchema = new mongoose.Schema({
         required: true,
     },
     speciality: {
-        type: [mongoose.Schema.Types.objectId],
-        required: true
+        type: mongoose.Schema.Types.ObjectId
     },
     gender: {
-        type: [mongoose.Schema.Types.objectId],
+        type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: 'Gender'
     },
@@ -57,10 +56,9 @@ const doctorSchema = new mongoose.Schema({
 doctorSchema.statics.doctorSignup = async function (body) {
     const newDoctor = new Doctor(body);
     try {
-        const doctor = await newDoctor.save();
-        return 1;
+        await newDoctor.save();
     } catch (error) {
-        return error
+        throw new Error(error.message)
     }
 }
 doctorSchema.statics.doctorSignin = async function (email, password) {

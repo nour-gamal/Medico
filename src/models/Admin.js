@@ -55,10 +55,9 @@ adminSchema.methods.generateJWTToken = async function () {
 adminSchema.statics.adminSignup = async function (body) {
 	const newAdmin = new Admin(body);
 	try {
-		const admin = await newAdmin.save();
-		return 1;
+		await newAdmin.save();
 	} catch (error) {
-		return error
+		throw new Error(error.message)
 	}
 }
 

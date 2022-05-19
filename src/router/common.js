@@ -4,7 +4,7 @@ const Admin = require('../models/Admin');
 const Doctor = require('../models/Doctor');
 const auth = require("../middlewares/auth");
 
-commonRouter.post('/signup', auth, async (req, res) => {
+commonRouter.post('/signup', async (req, res) => {
     const { userType } = req.body;
     var status = null;
     try {
@@ -13,12 +13,12 @@ commonRouter.post('/signup', auth, async (req, res) => {
         }
         switch (userType) {
             case 1:
-                status = Admin.adminSignup(req.body);
-                if (status !== 1) throw new Error(status.message)
+                await Admin.adminSignup(req.body);
+                res.status(201).send({ code: 201, message: 'Admin is added successfully' })
                 break;
             case 2:
-                status = Doctor.doctorSignup(req.body)
-                if (status !== 1) throw new Error(status.message)
+                await Doctor.doctorSignup(req.body);
+                res.status(201).send({ code: 201, message: 'Doctor is added successfully' })
                 break;
             default:
                 throw new Error("Invalid user type!")

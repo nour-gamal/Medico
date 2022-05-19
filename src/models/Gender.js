@@ -7,6 +7,11 @@ const genderSchema = new mongoose.Schema({
         required: true,
     }
 })
+genderSchema.virtual('gender', {
+    ref: 'Doctor',
+    localField: '_id',
+    foreignField: 'gender'
+})
 
 const Gender = mongoose.model('Gender', genderSchema);
 module.exports = Gender

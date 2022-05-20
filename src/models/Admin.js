@@ -36,7 +36,7 @@ const adminSchema = new mongoose.Schema({
 	avatar: {
 		type: String,
 	},
-	role: { type: String, required: true },
+	role: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'Role' },
 	tokens: { type: Array },
 });
 

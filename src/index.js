@@ -1,16 +1,21 @@
-var express = require("express");
-var adminRouter = require("./router/admin");
-var commonRouter = require("./router/common");
-var genderRouter = require("./router/gender");
-const doctorRouter = require('./router/doctor')
-var cors = require("cors");
+const express = require("express");
+const adminRouter = require("./router/admin");
+const commonRouter = require("./router/common");
+const genderRouter = require("./router/gender");
+const doctorRouter = require('./router/doctor');
+const roleRouter = require('./router/role');
 require("./database/mongoose");
+const cors = require("cors");
+
+
 const PORT = process.env.PORT;
 const app = express();
 app.use(express.json());
 app.use(cors());
 
+//Routers
 app.use(adminRouter);
+app.use(roleRouter);
 app.use(doctorRouter);
 app.use(commonRouter);
 app.use(genderRouter);

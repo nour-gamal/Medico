@@ -2,7 +2,6 @@ const express = require("express");
 const commonRouter = new express.Router();
 const Admin = require('../models/Admin');
 const Doctor = require('../models/Doctor');
-const auth = require("../middlewares/auth");
 
 commonRouter.post('/signup', async (req, res) => {
     const { userType } = req.body;
@@ -40,7 +39,7 @@ commonRouter.post('/signup', async (req, res) => {
 
 })
 
-commonRouter.post('/signin', auth, async (req, res) => {
+commonRouter.post('/signin', async (req, res) => {
     const { email, password, userType } = req.body;
     const isValidParams = !email || !password || !userType;
     var user = null
@@ -51,6 +50,9 @@ commonRouter.post('/signin', auth, async (req, res) => {
         switch (userType) {
             case 1:
                 user = await Admin.adminSignin(email, password)
+                break;
+            case 2:
+                user = await Doctor.doctorSignin(email, password)
                 break;
             default:
                 throw new Error()

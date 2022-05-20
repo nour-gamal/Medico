@@ -1,9 +1,8 @@
 const mongoose = require('mongoose');
 const validator = require("validator");
-const jwt = require("jsonwebtoken");
 const bcrypt = require('bcryptjs');
-const { getSelectedProperties } = require('../helpers/helpers')
-const gender = require('./Gender')
+const { getSelectedProperties } = require('../helpers/helpers');
+const jwt = require('jsonwebtoken')
 const doctorSchema = new mongoose.Schema({
     email: {
         type: String,
@@ -36,11 +35,10 @@ const doctorSchema = new mongoose.Schema({
         required: true,
     },
     speciality: {
-        type: [mongoose.Schema.Types.objectId],
-        required: true
+        type: mongoose.Schema.Types.ObjectId
     },
     gender: {
-        type: [mongoose.Schema.Types.objectId],
+        type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: 'Gender'
     },
@@ -51,21 +49,33 @@ const doctorSchema = new mongoose.Schema({
         type: [{
             type: String
         }]
+    },
+    tokens: {
+        type: []
     }
 })
+doctorSchema.methods.generateJWTToken = async function () {
+    const user = this;
+    const expirationInSeconds = 60 * 60 * 24; //1 day
+    const token = jwt.sign({ _id: user._id.toString() }, "SecretForMedico", {
+        expiresIn: expirationInSeconds,
+    });
+    user.tokens.push(token);
+    await user.save();
+    return token;
+};
 
 doctorSchema.statics.doctorSignup = async function (body) {
     const newDoctor = new Doctor(body);
     try {
-        const doctor = await newDoctor.save();
-        return 1;
+        await newDoctor.save();
     } catch (error) {
-        return error
+        throw new Error(error.message)
     }
 }
 doctorSchema.statics.doctorSignin = async function (email, password) {
     try {
-        const doctor = await Doctor.findOne({ email })
+        const doctor = await Doctor.findOne({ email }).populate('gender');
         if (!doctor) {
             throw new Error()
         }
@@ -76,7 +86,8 @@ doctorSchema.statics.doctorSignin = async function (email, password) {
             }
         });
         const token = await doctor.generateJWTToken();
-        const doctorResponse = getSelectedProperties(doctor, ['password', 'tokens'], { token })
+        console.log(token)
+        const doctorResponse = getSelectedProperties(doctor, ['password', 'tokens', 'gender'], { token, gender: doctor.gender.type })
         return doctorResponse;
     } catch (error) {
         res.status(400).send({ code: 400, message: 'Invalid login attempt!' })

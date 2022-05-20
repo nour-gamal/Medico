@@ -36,7 +36,7 @@ const adminSchema = new mongoose.Schema({
 	avatar: {
 		type: String,
 	},
-	role: { type: String, required: true },
+	role: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'Role' },
 	tokens: { type: Array },
 });
 
@@ -55,16 +55,19 @@ adminSchema.methods.generateJWTToken = async function () {
 adminSchema.statics.adminSignup = async function (body) {
 	const newAdmin = new Admin(body);
 	try {
-		const admin = await newAdmin.save();
-		return 1;
+		await newAdmin.save();
 	} catch (error) {
+<<<<<<< HEAD
 		throw new Error()
+=======
+		throw new Error(error.message)
+>>>>>>> backend
 	}
 }
 
 adminSchema.statics.adminSignin = async function (email, password) {
 	try {
-		const admin = await Admin.findOne({ email })
+		var admin = await Admin.findOne({ email }).populate('role')
 		if (!admin) {
 			throw new Error()
 		}
@@ -75,7 +78,7 @@ adminSchema.statics.adminSignin = async function (email, password) {
 			}
 		});
 		const token = await admin.generateJWTToken();
-		const adminResponse = getSelectedProperties(admin, ['password', 'tokens'], { token })
+		const adminResponse = getSelectedProperties(admin, ['password', 'tokens', 'role'], { token, role: admin.role.name })
 		return adminResponse;
 
 	} catch (error) {

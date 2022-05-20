@@ -57,11 +57,7 @@ adminSchema.statics.adminSignup = async function (body) {
 	try {
 		await newAdmin.save();
 	} catch (error) {
-<<<<<<< HEAD
-		throw new Error()
-=======
 		throw new Error(error.message)
->>>>>>> backend
 	}
 }
 

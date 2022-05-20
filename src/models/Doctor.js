@@ -86,7 +86,6 @@ doctorSchema.statics.doctorSignin = async function (email, password) {
             }
         });
         const token = await doctor.generateJWTToken();
-        console.log(token)
         const doctorResponse = getSelectedProperties(doctor, ['password', 'tokens', 'gender'], { token, gender: doctor.gender.type })
         return doctorResponse;
     } catch (error) {

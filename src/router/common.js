@@ -56,14 +56,7 @@ commonRouter.post('/signin', async (req, res) => {
             default:
                 throw new Error()
         }
-        switch (userType) {
-            case 1:
-                user = await Admin.adminSignin(email, password)
-                break;
-            default:
-                throw new Error()
-                break;
-        }
+
         res.status(200).send({ code: 200, data: user })
     } catch (error) {
         res.status(400).send({ code: 400, message: 'Invalid login attempt!' })

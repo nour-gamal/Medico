@@ -1,11 +1,7 @@
 const express = require("express");
 const commonRouter = new express.Router();
 const Admin = require('../models/Admin');
-<<<<<<< HEAD
-const auth = require("../middlewares/auth");
-=======
 const Doctor = require('../models/Doctor');
->>>>>>> backend
 
 commonRouter.post('/signup', async (req, res) => {
     const { userType } = req.body;
@@ -73,16 +69,6 @@ commonRouter.post('/signup', async (req, res) => {
         }
 
 
-<<<<<<< HEAD
-    })
-
-    commonRouter.post('/signin', async (req, res) => {
-        const { email, password, userType } = req.body;
-        const isValidParams = !email || !password || !userType;
-        var user = null
-        try {
-            if (isValidParams) {
-=======
 commonRouter.post('/signin', async (req, res) => {
     const { email, password, userType } = req.body;
     const isValidParams = !email || !password || !userType;
@@ -99,7 +85,6 @@ commonRouter.post('/signin', async (req, res) => {
                 user = await Doctor.doctorSignin(email, password)
                 break;
             default:
->>>>>>> backend
                 throw new Error()
             }
             switch (userType) {

@@ -1,24 +1,31 @@
 const Admin = require('../models/Admin');
+const Doctor = require('../models/Admin');
 const jwt = require('jsonwebtoken');
-const mongoose = require("mongoose");
 const auth = async (req, res, next) => {
-	const token = req.header("Authorization").split("Bearer ")[1];
+	const token = req.header("Authorization").replace("Bearer ", "");
 	try {
+		if (!token) {
+			throw new Error()
+		}
 		const tokenData = jwt.verify(token, 'SecretForMedico');
-		const { _id } = tokenData;
-		const userType = req.body.userType === 0 ? Admin : req.body.userType === 1 ? Doctor ? req.body.userType === '2' ? Patient : null : null : null
+		const { _id, userType } = tokenData;
 
-		if (userType) {
-			const user = await userType.findOne({ _id, tokens: token })
-			if (user) {
-				req.user = user, req.token = token
-				next();
-			} else {
-				throw new Error('No user found!')
-
+		if (userType === 1) {
+			const admin = await Admin.findOne({ _id, tokens: token, userType })
+			if (!admin) {
+				throw new Error()
 			}
+			req.user = admin, req.token = token
+			next();
+		} else if (userType === 2) {
+			const doctor = await Doctor.findOne({ _id, userType, tokens: token })
+			if (!doctor) {
+				throw new error()
+			}
+			req.user = doctor, req.token = token
+			next()
 		} else {
-			throw new Error('Invalid User Type!')
+			throw new Error()
 		}
 
 	} catch (error) {

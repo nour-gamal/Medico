@@ -4,6 +4,7 @@ const commonRouter = require("./router/common");
 const genderRouter = require("./router/gender");
 const doctorRouter = require('./router/doctor');
 const roleRouter = require('./router/role');
+const specialityRouter = require('./router/speciality');
 require("./database/mongoose");
 const cors = require("cors");
 
@@ -19,4 +20,6 @@ app.use(roleRouter);
 app.use(doctorRouter);
 app.use(commonRouter);
 app.use(genderRouter);
+app.use(specialityRouter);
+
 app.listen(PORT, () => console.log(`Server Running on Port: ${PORT}`));

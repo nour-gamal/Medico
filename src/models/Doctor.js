@@ -2,7 +2,8 @@ const mongoose = require('mongoose');
 const validator = require("validator");
 const bcrypt = require('bcryptjs');
 const { getSelectedProperties } = require('../helpers/helpers');
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
+const doctorRouter = require('../router/doctor');
 const doctorSchema = new mongoose.Schema({
     email: {
         type: String,
@@ -35,7 +36,8 @@ const doctorSchema = new mongoose.Schema({
         required: true,
     },
     speciality: {
-        type: mongoose.Schema.Types.ObjectId
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Speciality'
     },
     gender: {
         type: mongoose.Schema.Types.ObjectId,
@@ -57,7 +59,7 @@ const doctorSchema = new mongoose.Schema({
 doctorSchema.methods.generateJWTToken = async function () {
     const user = this;
     const expirationInSeconds = 60 * 60 * 24; //1 day
-    const token = jwt.sign({ _id: user._id.toString() }, "SecretForMedico", {
+    const token = jwt.sign({ _id: user._id.toString(), userType: 2 }, "SecretForMedico", {
         expiresIn: expirationInSeconds,
     });
     user.tokens.push(token);
@@ -75,7 +77,7 @@ doctorSchema.statics.doctorSignup = async function (body) {
 }
 doctorSchema.statics.doctorSignin = async function (email, password) {
     try {
-        const doctor = await Doctor.findOne({ email }).populate('gender');
+        const doctor = await Doctor.findOne({ email }).populate('gender').populate('speciality');
         if (!doctor) {
             throw new Error()
         }
@@ -86,8 +88,7 @@ doctorSchema.statics.doctorSignin = async function (email, password) {
             }
         });
         const token = await doctor.generateJWTToken();
-        console.log(token)
-        const doctorResponse = getSelectedProperties(doctor, ['password', 'tokens', 'gender'], { token, gender: doctor.gender.type })
+        const doctorResponse = getSelectedProperties(doctor, ['password', 'tokens', 'gender', 'speciality'], { token, gender: doctor.gender.type, speciality: doctor.speciality.name })
         return doctorResponse;
     } catch (error) {
         res.status(400).send({ code: 400, message: 'Invalid login attempt!' })

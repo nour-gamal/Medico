@@ -3,6 +3,7 @@ const validator = require("validator");
 const jwt = require("jsonwebtoken");
 const bcrypt = require('bcryptjs');
 const { getSelectedProperties } = require('../helpers/helpers')
+const nodemailer = require("nodemailer");
 
 const adminSchema = new mongoose.Schema({
 	email: {
@@ -51,6 +52,8 @@ adminSchema.methods.generateJWTToken = async function () {
 	await user.save();
 	return token;
 };
+
+// sendEmail().catch(console.error);
 
 adminSchema.statics.adminSignup = async function (body) {
 	const newAdmin = new Admin(body);

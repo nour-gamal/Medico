@@ -2,17 +2,22 @@ const express = require("express");
 const commonRouter = new express.Router();
 const Admin = require('../models/Admin');
 const Doctor = require('../models/Doctor');
-
+const User = require('../models/User');
+const { getSelectedProperties } = require('../helpers/helpers')
 commonRouter.post('/signup', async (req, res) => {
-    const { userType } = req.body;
     var status = null;
+    const newUser = new User(req.body);
+
     try {
-        if (!userType) {
-            throw new Error("Please provide user type!")
-        }
+        const savedUser = await newUser.save();
+        let body = { ...req.body, _id: savedUser.id }
+        delete body.email
+        delete body.password
+        const userType = req.body.userType;
+        console.log(body);
         switch (userType) {
             case 1:
-                await Admin.adminSignup(req.body);
+                await Admin.adminSignup(body);
                 res.status(201).send({ code: 201, message: 'Admin is added successfully' })
                 break;
             case 2:

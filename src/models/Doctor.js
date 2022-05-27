@@ -5,28 +5,6 @@ const { getSelectedProperties } = require('../helpers/helpers');
 const jwt = require('jsonwebtoken');
 const doctorRouter = require('../router/doctor');
 const doctorSchema = new mongoose.Schema({
-    email: {
-        type: String,
-        required: true,
-        trim: true,
-        lowercase: true,
-        unique: true,
-        validate(value) {
-            if (!validator.isEmail(value)) {
-                throw new Error("Please enter a valid email!");
-            }
-        },
-    },
-    password: {
-        type: String,
-        required: true,
-        trim: true,
-        validate(value) {
-            if (!validator.isStrongPassword(value)) {
-                throw new Error("Please enter a strong password!");
-            }
-        },
-    },
     firstName: {
         type: String,
         required: true,

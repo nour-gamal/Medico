@@ -6,27 +6,8 @@ const { getSelectedProperties } = require('../helpers/helpers')
 const nodemailer = require("nodemailer");
 
 const adminSchema = new mongoose.Schema({
-	email: {
-		type: String,
-		required: true,
-		trim: true,
-		lowercase: true,
-		unique: true,
-		validate(value) {
-			if (!validator.isEmail(value)) {
-				throw new Error("Please enter a valid email!");
-			}
-		},
-	},
-	password: {
-		type: String,
-		required: true,
-		trim: true,
-		validate(value) {
-			if (!validator.isStrongPassword(value)) {
-				throw new Error("Please enter a strong password!");
-			}
-		},
+	_id: {
+		type: mongoose.Schema.Types.ObjectId
 	},
 	firstName: {
 		type: String,
@@ -39,7 +20,7 @@ const adminSchema = new mongoose.Schema({
 	},
 	role: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'Role' },
 	tokens: { type: Array },
-});
+}, { _id: false });
 
 adminSchema.methods.generateJWTToken = async function () {
 	const user = this;
@@ -79,20 +60,12 @@ adminSchema.statics.adminSignin = async function (email, password) {
 		const token = await admin.generateJWTToken();
 		const adminResponse = getSelectedProperties(admin, ['password', 'tokens', 'role'], { token, role: admin.role.name })
 		return adminResponse;
-
 	} catch (error) {
 		res.status(400).send({ code: 400, message: 'Invalid login attempt!' })
 	}
 }
 
 
-adminSchema.pre('save', async function (next) {
-	const admin = this;
-	if (admin.isModified('password')) {
-		admin.password = await bcrypt.hash(admin.password, 8)
-	}
-	next();
-})
 
 const Admin = mongoose.model("Admin", adminSchema);
 module.exports = Admin;

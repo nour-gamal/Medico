@@ -3,40 +3,36 @@ const commonRouter = new express.Router();
 const Admin = require('../models/Admin');
 const Doctor = require('../models/Doctor');
 const User = require('../models/User');
-const { getSelectedProperties } = require('../helpers/helpers')
+const { getSelectedProperties, sendEmail } = require('../helpers/helpers')
 commonRouter.post('/signup', async (req, res) => {
     var status = null;
     const newUser = new User(req.body);
-
     try {
         const savedUser = await newUser.save();
         let body = { ...req.body, _id: savedUser.id }
         delete body.email
         delete body.password
         const userType = req.body.userType;
-        console.log(body);
         switch (userType) {
             case 1:
-                await Admin.adminSignup(body);
-                res.status(201).send({ code: 201, message: 'Admin is added successfully' })
+                const newAdmin = new Admin(body);
+                await newAdmin.save();
                 break;
             case 2:
-                await Doctor.doctorSignup(req.body);
-                res.status(201).send({ code: 201, message: 'Doctor is added successfully' })
+                const newDoctor = new Doctor(body);
+                await newDoctor.save();
                 break;
             default:
                 throw new Error("Invalid user type!")
                 break;
         }
         const userTypeName = userType === 1 ? 'Admin' : userType === 2 ? 'Doctor' : 'Patient'
-        if (status) {
-            res
-                .status(201)
-                .send({
-                    code: 201,
-                    message: `${userTypeName} successfully Registered!`,
-                });
-        }
+        res
+            .status(201)
+            .send({
+                code: 201,
+                message: `${userTypeName} successfully Registered!`,
+            });
     } catch (error) {
         res.status(400).send({ code: 400, message: error.message })
     }

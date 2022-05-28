@@ -32,6 +32,9 @@ const doctorSchema = new mongoose.Schema({
     },
     tokens: {
         type: []
+    },
+    isActive: {
+        type: Boolean
     }
 })
 doctorSchema.methods.generateJWTToken = async function () {
@@ -45,14 +48,6 @@ doctorSchema.methods.generateJWTToken = async function () {
     return token;
 };
 
-doctorSchema.statics.doctorSignup = async function (body) {
-    const newDoctor = new Doctor(body);
-    try {
-        await newDoctor.save();
-    } catch (error) {
-        throw new Error(error.message)
-    }
-}
 doctorSchema.statics.doctorSignin = async function (email, password) {
     try {
         const doctor = await Doctor.findOne({ email }).populate('gender').populate('speciality');

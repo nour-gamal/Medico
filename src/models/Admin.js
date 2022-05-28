@@ -20,6 +20,10 @@ const adminSchema = new mongoose.Schema({
 	},
 	role: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'Role' },
 	tokens: { type: Array },
+	isActive: {
+		type: Boolean,
+		default: false
+	}
 }, { _id: false });
 
 adminSchema.methods.generateJWTToken = async function () {
@@ -34,16 +38,7 @@ adminSchema.methods.generateJWTToken = async function () {
 	return token;
 };
 
-// sendEmail().catch(console.error);
 
-adminSchema.statics.adminSignup = async function (body) {
-	const newAdmin = new Admin(body);
-	try {
-		await newAdmin.save();
-	} catch (error) {
-		throw new Error(error.message)
-	}
-}
 
 adminSchema.statics.adminSignin = async function (email, password) {
 	try {

@@ -17,4 +17,41 @@ const getSelectedProperties = (originalObject, removedParameters, addedParameter
     return targetObject;
 }
 
-module.exports = { getSelectedProperties }
+async function sendEmail(html) {
+    // Generate test SMTP service account from ethereal.email
+    // Only needed if you don't have a real mail account for testing
+    // let testAccount = await nodemailer.createTestAccount();
+    // console.log(testAccount)
+    // create reusable transporter object using the default SMTP transport
+    let transporter = nodemailer.createTransport({
+        host: "smtp.mailtrap.io",
+        port: 587,
+        service: 'gmail',
+        secure: false, // true for 465, false for other ports
+        auth: {
+            user: "na3463612@gmail.com", // generated ethereal user
+            pass: "meshfr2a123", // generated ethereal password
+        },
+        // debug: true, // show debug output
+        // logger: true // log information in console
+    });
+
+    // send mail with defined transport object
+    let info = await transporter.sendMail({
+        from: "na3463612@gmail.com", // sender address
+        to: "nmg181963@hotmail.com", // list of receivers
+        subject: "Hello ✔", // Subject line
+        // text: "Hello world?", // plain text body
+        html, // html body
+    });
+
+    // console.log("Message sent: %s", info.accepted);
+    // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
+
+    // Preview only available when sending through an Ethereal account
+    // console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+    // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
+}
+
+
+module.exports = { getSelectedProperties, sendEmail }

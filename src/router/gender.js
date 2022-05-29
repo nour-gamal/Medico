@@ -1,11 +1,10 @@
 const express = require("express");
 const Gender = require("../models/Gender");
 const auth = require("../middlewares/auth");
-const adminAuth = require("../middlewares/adminAuth");
 const genderRouter = new express.Router();
 
 
-genderRouter.get('/getAllGenders', adminAuth, async (req, res) => {
+genderRouter.get('/getAllGenders', auth, async (req, res) => {
     try {
         const gender = await Gender.find({});
         res.status(200).send({ code: 200, gender })

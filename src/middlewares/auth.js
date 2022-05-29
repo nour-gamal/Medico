@@ -1,5 +1,5 @@
 const Admin = require('../models/Admin');
-const Doctor = require('../models/Admin');
+const Doctor = require('../models/Doctor');
 const jwt = require('jsonwebtoken');
 const auth = async (req, res, next) => {
 	const token = req.header("Authorization").replace("Bearer ", "");
@@ -8,8 +8,10 @@ const auth = async (req, res, next) => {
 			throw new Error()
 		}
 		const tokenData = jwt.verify(token, 'SecretForMedico');
-		const { _id, userType } = tokenData;
-
+		const { _id, userType, isActive } = tokenData;
+		if (!isActive) {
+			throw new Error()
+		}
 		if (userType === 1) {
 			const admin = await Admin.findOne({ _id, tokens: token, userType })
 			if (!admin) {

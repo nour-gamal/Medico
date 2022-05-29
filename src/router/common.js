@@ -3,6 +3,7 @@ const commonRouter = new express.Router();
 const Admin = require('../models/Admin');
 const Doctor = require('../models/Doctor');
 const User = require('../models/User');
+const bcrypt = require('bcryptjs')
 const { getSelectedProperties, sendEmail } = require('../helpers/helpers')
 commonRouter.post('/signup', async (req, res) => {
     var status = null;
@@ -41,25 +42,37 @@ commonRouter.post('/signup', async (req, res) => {
 })
 
 commonRouter.post('/signin', async (req, res) => {
-    const { email, password, userType } = req.body;
-    const isValidParams = !email || !password || !userType;
+    const { email, password } = req.body;
+    const isValidParams = !email || !password;
     var user = null
+    var userData = null
     try {
         if (isValidParams) {
             throw new Error()
         }
-        switch (userType) {
+        const user = await User.find({ email });
+        const hashedPassword = user[0].password;
+        if (!user) {
+            throw new Error()
+        }
+        const isMatch = await bcrypt.compare(password, hashedPassword)
+        if (!isMatch) {
+            throw new Error()
+        }
+
+        switch (user[0].userType) {
             case 1:
-                user = await Admin.adminSignin(email, password)
+                userData = await Admin.adminSignin(user[0]._id)
                 break;
             case 2:
-                user = await Doctor.doctorSignin(email, password)
+                userData = await Doctor.doctorSignin(user[0]._id)
                 break;
             default:
                 throw new Error()
                 break;
         }
-        res.status(200).send({ code: 200, data: user })
+
+        res.status(200).send({ code: 200, data: userData })
     } catch (error) {
         res.status(400).send({ code: 400, message: 'Invalid login attempt!' })
     }

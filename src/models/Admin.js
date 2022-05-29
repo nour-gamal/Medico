@@ -40,20 +40,15 @@ adminSchema.methods.generateJWTToken = async function () {
 
 
 
-adminSchema.statics.adminSignin = async function (email, password) {
+adminSchema.statics.adminSignin = async function (_id) {
 	try {
-		var admin = await Admin.findOne({ email }).populate('role')
+		var admin = await Admin.findOne({ _id: _id.toString() }).populate('role');
 		if (!admin) {
 			throw new Error()
 		}
-		const hashedPassword = admin.password;
-		bcrypt.compare(password, hashedPassword, (err, res) => {
-			if (!res) {
-				throw new Error()
-			}
-		});
+
 		const token = await admin.generateJWTToken();
-		const adminResponse = getSelectedProperties(admin, ['password', 'tokens', 'role'], { token, role: admin.role.name })
+		const adminResponse = getSelectedProperties(admin, ['tokens', 'role'], { token, role: admin.role._id });
 		return adminResponse;
 	} catch (error) {
 		res.status(400).send({ code: 400, message: 'Invalid login attempt!' })

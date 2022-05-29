@@ -15,11 +15,11 @@ app.use(express.json());
 app.use(cors());
 
 //Routers
-app.use(adminRouter);
-app.use(roleRouter);
-app.use(doctorRouter);
 app.use(commonRouter);
-app.use(genderRouter);
-app.use(specialityRouter);
+app.use('/admin', adminRouter);
+app.use('/role', roleRouter);
+app.use('/doctor', doctorRouter);
+app.use('/gender', genderRouter);
+app.use('/speciality', specialityRouter);
 
 app.listen(PORT, () => console.log(`Server Running on Port: ${PORT}`));

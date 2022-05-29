@@ -3,7 +3,6 @@ const validator = require("validator");
 const jwt = require("jsonwebtoken");
 const bcrypt = require('bcryptjs');
 const { getSelectedProperties } = require('../helpers/helpers')
-const nodemailer = require("nodemailer");
 
 const adminSchema = new mongoose.Schema({
 	_id: {

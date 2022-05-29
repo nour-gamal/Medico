@@ -1,3 +1,5 @@
+const nodemailer = require("nodemailer");
+
 const getSelectedProperties = (originalObject, removedParameters, addedParameters) => {
     const targetObject = originalObject.toObject()
 
@@ -17,7 +19,8 @@ const getSelectedProperties = (originalObject, removedParameters, addedParameter
     return targetObject;
 }
 
-async function sendEmail(html) {
+async function sendEmail(subject, html, toEmail) {
+    console.log(subject, html, toEmail)
     // Generate test SMTP service account from ethereal.email
     // Only needed if you don't have a real mail account for testing
     // let testAccount = await nodemailer.createTestAccount();
@@ -39,9 +42,8 @@ async function sendEmail(html) {
     // send mail with defined transport object
     let info = await transporter.sendMail({
         from: "na3463612@gmail.com", // sender address
-        to: "nmg181963@hotmail.com", // list of receivers
-        subject: "Hello ✔", // Subject line
-        // text: "Hello world?", // plain text body
+        to: [toEmail], // list of receivers
+        subject, // Subject line
         html, // html body
     });
 

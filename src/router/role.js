@@ -2,7 +2,7 @@ const express = require('express')
 const Role = require('../models/Role')
 const roleRouter = new express.Router()
 
-roleRouter.post('/role/addRole', async (req, res) => {
+roleRouter.post('/addRole', async (req, res) => {
     const newRole = new Role(req.body);
     try {
         await newRole.save()
@@ -12,7 +12,7 @@ roleRouter.post('/role/addRole', async (req, res) => {
     }
 })
 
-roleRouter.get('/role/getAllRoles', async (req, res) => {
+roleRouter.get('/getAllRoles', async (req, res) => {
     try {
         const RolesList = await Role.find({});
         res.status(200).send({ code: 200, data: RolesList })

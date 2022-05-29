@@ -6,7 +6,6 @@ const User = require('../models/User');
 const bcrypt = require('bcryptjs')
 const { getSelectedProperties, sendEmail } = require('../helpers/helpers')
 commonRouter.post('/signup', async (req, res) => {
-    var status = null;
     const newUser = new User(req.body);
     try {
         const savedUser = await newUser.save();
@@ -14,6 +13,7 @@ commonRouter.post('/signup', async (req, res) => {
         delete body.email
         delete body.password
         const userType = req.body.userType;
+        const email = req.body.email
         switch (userType) {
             case 1:
                 const newAdmin = new Admin(body);
@@ -27,7 +27,9 @@ commonRouter.post('/signup', async (req, res) => {
                 throw new Error("Invalid user type!")
                 break;
         }
+
         const userTypeName = userType === 1 ? 'Admin' : userType === 2 ? 'Doctor' : 'Patient'
+        sendEmail('Confirm Email', '<>Click here</>', email)
         res
             .status(201)
             .send({

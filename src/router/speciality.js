@@ -3,7 +3,7 @@ const Speciality = require('../models/Speciality');
 const specialityRouter = new express.Router();
 const auth = require('../middlewares/auth')
 
-specialityRouter.post('/speciality/addSpeciality', auth, async (req, res) => {
+specialityRouter.post('/addSpeciality', auth, async (req, res) => {
     const speciality = new Speciality(req.body)
     try {
         await speciality.save();
@@ -14,7 +14,7 @@ specialityRouter.post('/speciality/addSpeciality', auth, async (req, res) => {
 })
 
 
-specialityRouter.get('/speciality/getAllSpecialities', auth, async (req, res) => {
+specialityRouter.get('/getAllSpecialities', auth, async (req, res) => {
     try {
         const specialities = await Speciality.find();
         res.status(200).send({ code: 200, data: specialities });

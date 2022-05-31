@@ -29,9 +29,9 @@ commonRouter.post('/signup', async (req, res) => {
                 throw new Error("Invalid user type!")
                 break;
         }
-
+        const LIVE_URL = process.env.LIVE_URL;
         const userTypeName = userType === 1 ? 'Admin' : userType === 2 ? 'Doctor' : 'Patient'
-        sendEmail('Confirm Email', `<div>To Verify Please <a href=https://medicoapi.heroku.app/confirmEmail?code=${randomNumber}&email=${email}>Click Here</a></div>`, email)
+        sendEmail('Confirm Email', `<div>To Verify Please <a href=${LIVE_URL}/confirmEmail?code=${randomNumber}&email=${email}>Click Here</a></div>`, email)
         res
             .status(201)
             .send({

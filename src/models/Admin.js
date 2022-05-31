@@ -19,10 +19,6 @@ const adminSchema = new mongoose.Schema({
 	},
 	role: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'Role' },
 	tokens: { type: Array },
-	isActive: {
-		type: Boolean,
-		default: false
-	}
 }, { _id: false });
 
 adminSchema.methods.generateJWTToken = async function () {

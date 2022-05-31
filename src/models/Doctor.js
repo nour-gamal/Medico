@@ -32,10 +32,6 @@ const doctorSchema = new mongoose.Schema({
     },
     tokens: {
         type: []
-    },
-    isActive: {
-        type: Boolean,
-        default: false
     }
 })
 doctorSchema.methods.generateJWTToken = async function () {

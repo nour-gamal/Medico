@@ -27,6 +27,13 @@ const userSchema = new mongoose.Schema({
     userType: {
         type: Number,
         required: true
+    },
+    isActive: {
+        type: Boolean,
+        default: false
+    },
+    verficationCode: {
+        type: String
     }
 })
 

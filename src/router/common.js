@@ -6,7 +6,9 @@ const User = require('../models/User');
 const bcrypt = require('bcryptjs')
 const { getSelectedProperties, sendEmail } = require('../helpers/helpers')
 commonRouter.post('/signup', async (req, res) => {
-    const newUser = new User(req.body);
+
+    const randomNumber = Math.floor(Math.random()) * 999999
+    const newUser = new User({ ...req.body, verficationCode: randomNumber });
     try {
         const savedUser = await newUser.save();
         let body = { ...req.body, _id: savedUser.id }
@@ -29,7 +31,7 @@ commonRouter.post('/signup', async (req, res) => {
         }
 
         const userTypeName = userType === 1 ? 'Admin' : userType === 2 ? 'Doctor' : 'Patient'
-        sendEmail('Confirm Email', '<>Click here</>', email)
+        sendEmail('Confirm Email', `<div>To Verify Please <a href=https://medicoapi.heroku.app/confirmEmail?code=${randomNumber}&email=${email}>Click Here</a></div>`, email)
         res
             .status(201)
             .send({
@@ -40,7 +42,23 @@ commonRouter.post('/signup', async (req, res) => {
         res.status(400).send({ code: 400, message: error.message })
     }
 })
+commonRouter.get('/confirmEmail', async (req, res) => {
+    const { code, email } = req.query
+    try {
+        // const user = await User.exists()
+        // if (!user) {
+        //     throw new Error('Verification Faild!')
+        // }
+        await User.findOneAndUpdate({ email, verficationCode: code }, { isActive: true })
+        res.redirect('https://www.google.com');
+    } catch (error) {
+        res.status(400).send({
+            code: 400,
+            message: error.message
+        })
+    }
 
+})
 
 commonRouter.post('/signin', async (req, res) => {
     const { email, password } = req.body;
@@ -54,11 +72,16 @@ commonRouter.post('/signin', async (req, res) => {
         const user = await User.find({ email });
         const hashedPassword = user[0].password;
         if (!user) {
-            throw new Error()
+            throw new Error("Invalid Login Attempt!")
         }
         const isMatch = await bcrypt.compare(password, hashedPassword)
         if (!isMatch) {
-            throw new Error()
+            throw new Error("Invalid Login Attempt!")
+        }
+
+
+        if (!user[0].isActive) {
+            throw new Error("Your account is not activated!")
         }
 
         switch (user[0].userType) {
@@ -74,8 +97,12 @@ commonRouter.post('/signin', async (req, res) => {
 
         res.status(200).send({ code: 200, data: userData })
     } catch (error) {
-        res.status(400).send({ code: 400, message: 'Invalid login attempt!' })
+        res.status(400).send({
+            code: 400, message: error.message
+        })
     }
 })
+
+
 
 module.exports = commonRouter;

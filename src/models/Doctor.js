@@ -37,7 +37,7 @@ const doctorSchema = new mongoose.Schema({
 doctorSchema.methods.generateJWTToken = async function () {
     const user = this;
     const expirationInSeconds = 60 * 60 * 24; //1 day
-    const token = jwt.sign({ _id: user._id.toString(), userType: 2, isActive: user.isActive }, "SecretForMedico", {
+    const token = jwt.sign({ _id: user._id.toString(), userType: 2 }, "SecretForMedico", {
         expiresIn: expirationInSeconds,
     });
     user.tokens.push(token);

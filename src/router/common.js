@@ -6,7 +6,6 @@ const User = require('../models/User');
 const bcrypt = require('bcryptjs')
 const { getSelectedProperties, sendEmail } = require('../helpers/helpers')
 commonRouter.post('/signup', async (req, res) => {
-
     const randomNumber = Math.floor(Math.random()) * 999999
     const newUser = new User({ ...req.body, verficationCode: randomNumber });
     try {

@@ -8,10 +8,7 @@ const auth = async (req, res, next) => {
 			throw new Error()
 		}
 		const tokenData = jwt.verify(token, 'SecretForMedico');
-		const { _id, userType, isActive } = tokenData;
-		if (!isActive) {
-			throw new Error()
-		}
+		const { _id, userType } = tokenData;
 		if (userType === 1) {
 			const admin = await Admin.findOne({ _id, tokens: token, userType })
 			if (!admin) {

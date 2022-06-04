@@ -112,6 +112,8 @@ const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         if (req.query.fileType == 1) { //Type 1 equal Avatar
             cb(null, "./src/Public/Avatar")
+        } else if (req.query.fileType == 2) {
+            cb(null, "./src/Public/Documents")//type 2 equal Documents
         } else {
             return cb(new Error("Invalid file Type!"))
         }
@@ -127,12 +129,14 @@ const storage = multer.diskStorage({
             } else {
                 return cb(new Error('Invalid mime type'));
             }
-        }
+        } else if (req.query.fileType == 2) {
+            cb(null, Date.now() + file.originalname);
+        } else { }
     }
 })
 
-const uploadFile = multer({ storage }).single('file')
-commonRouter.post('/uploadSingleFile', uploadFile, async (req, res) => {
+const uploadFile = multer({ storage })
+commonRouter.post('/uploadSingleFile', uploadFile.single('file'), async (req, res) => {
     try {
         res.status(200).send({ code: 200, data: { message: 'File uploaded successfully!', path: req.file.path } })
     } catch (error) {
@@ -140,5 +144,16 @@ commonRouter.post('/uploadSingleFile', uploadFile, async (req, res) => {
     }
 })
 
+commonRouter.post('/uploadMultiFiles', uploadFile.array('file'), async (req, res) => {
+    try {
+        let pathArr = []
+        req.files.forEach(file => {
+            pathArr.push(file.path)
+        })
+        res.status(200).send({ code: 200, data: { message: 'File uploaded successfully!', paths: pathArr } })
+    } catch (error) {
+        res.status(400).send({ code: 400, message: error.message })
+    }
+})
 
 module.exports = commonRouter;

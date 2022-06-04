@@ -4,7 +4,13 @@ const Admin = require('../models/Admin');
 const Doctor = require('../models/Doctor');
 const User = require('../models/User');
 const bcrypt = require('bcryptjs')
-const { getSelectedProperties, sendEmail } = require('../helpers/helpers')
+const { getSelectedProperties, sendEmail } = require('../helpers/helpers');
+const multer = require('multer');
+
+
+
+
+
 commonRouter.post('/signup', async (req, res) => {
     const randomNumber = Math.floor(Math.random()) * 999999
     const newUser = new User({ ...req.body, verficationCode: randomNumber });
@@ -102,6 +108,37 @@ commonRouter.post('/signin', async (req, res) => {
     }
 })
 
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        if (req.query.fileType == 1) { //Type 1 equal Avatar
+            cb(null, "./src/Public/Avatar")
+        } else {
+            return cb(new Error("Invalid file Type!"))
+        }
+    }, filename: (req, file, cb) => {
+        cb(null, + Date.now() + file.originalname)
+    }, limits: {
+        fileSize: 1024 * 1024 * 5 //5 MB limit
+    },
+    fileFilter: (req, file, cb) => {
+        if (req.query.fileType == 1) { //Type 1 equal Avatar
+            if (file.mimetype.includes("image")) {
+                cb(null, Date.now() + file.originalname);
+            } else {
+                return cb(new Error('Invalid mime type'));
+            }
+        }
+    }
+})
+
+const uploadFile = multer({ storage }).single('file')
+commonRouter.post('/uploadSingleFile', uploadFile, async (req, res) => {
+    try {
+        res.status(200).send({ code: 200, data: { message: 'File uploaded successfully!', path: req.file.path } })
+    } catch (error) {
+        res.status(400).send({ code: 400, message: error.message })
+    }
+})
 
 
 module.exports = commonRouter;

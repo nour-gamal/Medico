@@ -2,8 +2,12 @@ const Admin = require('../models/Admin');
 const Doctor = require('../models/Doctor');
 const jwt = require('jsonwebtoken');
 const auth = async (req, res, next) => {
-	const token = req.header("Authorization").replace("Bearer ", "");
 	try {
+		if (!req.header("Authorization")) {
+			throw new Error()
+		}
+		const token = req.header("Authorization").replace("Bearer ", "");
+
 		if (!token) {
 			throw new Error()
 		}

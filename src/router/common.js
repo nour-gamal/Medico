@@ -67,6 +67,9 @@ commonRouter.get('/confirmEmail', async (req, res) => {
 
 commonRouter.post('/signin', async (req, res) => {
     const { email, password } = req.body;
+    if (!email || !password) {
+        throw new Error('Please fill all the fields!')
+    }
     const isValidParams = !email || !password;
     var user = null
     var userData = null

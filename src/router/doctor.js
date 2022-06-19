@@ -1,6 +1,8 @@
 const express = require("express");
 const Doctor = require("../models/Doctor");
 const auth = require("../middlewares/auth");
+const User = require('../models/User')
+const { getSelectedProperties } = require("../helpers/helpers");
 const doctorRouter = new express.Router();
 const verifiedRoles = require("../middlewares/verified_Roles");
 
@@ -28,7 +30,7 @@ doctorRouter.patch('/editDoctor', auth, verifiedRoles(['Admin', 'Super Admin']),
         res.status(400).send({ code: 400, message: error.message })
     }
 })
-doctorRouter.delete('/deleteAdmin', auth, verifiedRoles(['Admin', 'Super Admin']), async (req, res) => {
+doctorRouter.delete('/deleteDoctor', auth, verifiedRoles(['Admin', 'Super Admin']), async (req, res) => {
     try {
         const { _id } = req.body
         await Doctor.findByIdAndDelete(_id);

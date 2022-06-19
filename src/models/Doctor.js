@@ -3,7 +3,6 @@ const validator = require("validator");
 const bcrypt = require('bcryptjs');
 const { getSelectedProperties } = require('../helpers/helpers');
 const jwt = require('jsonwebtoken');
-const doctorRouter = require('../router/doctor');
 const doctorSchema = new mongoose.Schema({
     firstName: {
         type: String,

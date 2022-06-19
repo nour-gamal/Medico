@@ -34,7 +34,6 @@ const auth = async (req, res, next) => {
 	} catch (error) {
 		res.status(401).send({ code: 401, message: 'Invalid token!' })
 	}
-
 };
 
 module.exports = auth;

@@ -5,7 +5,7 @@ const auth = require("../middlewares/auth");
 const adminRouter = new express.Router();
 const verifiedRoles = require("../middlewares/verified_Roles");
 const { getSelectedProperties } = require("../helpers/helpers");
-adminRouter.get('/getAllAdmins', auth, verifiedRoles('Super Admin'), async (req, res) => {
+adminRouter.get('/getAllAdmins', auth, verifiedRoles(['Super Admin']), async (req, res) => {
     try {
         const admins = await Admin.find({})
         const adminsResponse = []
@@ -19,7 +19,7 @@ adminRouter.get('/getAllAdmins', auth, verifiedRoles('Super Admin'), async (req,
     }
 })
 
-adminRouter.patch('/editAdmin', auth, verifiedRoles('Super Admin'), async (req, res) => {
+adminRouter.patch('/editAdmin', auth, verifiedRoles(['Super Admin']), async (req, res) => {
     try {
         const { _id, ...data } = req.body
         await Admin.findByIdAndUpdate(_id, data, { new: true })
@@ -29,7 +29,7 @@ adminRouter.patch('/editAdmin', auth, verifiedRoles('Super Admin'), async (req, 
         res.status(400).send({ code: 400, message: error.message })
     }
 })
-adminRouter.delete('/deleteAdmin', auth, verifiedRoles('Super Admin'), async (req, res) => {
+adminRouter.delete('/deleteAdmin', auth, verifiedRoles(['Super Admin']), async (req, res) => {
     try {
         const { _id } = req.body
         await Admin.findByIdAndDelete(_id);

@@ -8,7 +8,7 @@ const verifiedRoles = (allowedRoles) => {
                 throw new Error()
             }
             const adminRoleName = getAdminRoleName(AdminRole.toString())
-            if (adminRoleName !== allowedRoles) {
+            if (!allowedRoles.includes(adminRoleName)) {
                 throw new Error()
             }
             next();

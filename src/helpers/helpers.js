@@ -31,8 +31,8 @@ async function sendEmail(subject, html, toEmail) {
         service: 'gmail',
         secure: false, // true for 465, false for other ports
         auth: {
-            user: "na3463612@gmail.com", // generated ethereal user
-            pass: "meshfr2a123", // generated ethereal password
+            user: "medico.noreply1@gmail.com", // generated ethereal user
+            pass: "ysvruczyjzbxerky", // generated ethereal password
         },
         // debug: true, // show debug output
         // logger: true // log information in console
@@ -40,7 +40,7 @@ async function sendEmail(subject, html, toEmail) {
 
     // send mail with defined transport object
     let info = await transporter.sendMail({
-        from: "na3463612@gmail.com", // sender address
+        from: "medico.noreply1@gmail.comm", // sender address
         to: [toEmail], // list of receivers
         subject, // Subject line
         html, // html body

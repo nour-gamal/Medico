@@ -55,15 +55,4 @@ async function sendEmail(subject, html, toEmail) {
 }
 
 
-const getAdminRoleName = (roleId) => {
-    switch (roleId) {
-        case '6287def3ea4041d243c5b8ea':
-            return 'Super Admin';
-        case '6287defcea4041d243c5b8ec':
-            return 'Admin';
-        default:
-            return false;
-    }
-}
-
-module.exports = { getSelectedProperties, sendEmail, getAdminRoleName }
+module.exports = { getSelectedProperties, sendEmail }

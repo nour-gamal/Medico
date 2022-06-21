@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const validator = require("validator");
 const bcrypt = require('bcryptjs');
 const { getSelectedProperties } = require('../helpers/helpers');
 const jwt = require('jsonwebtoken');

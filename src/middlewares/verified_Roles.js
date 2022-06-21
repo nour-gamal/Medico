@@ -1,5 +1,3 @@
-const { getAdminRoleName } = require("../helpers/helpers");
-
 const verifiedRoles = (allowedRoles) => {
     return (req, res, next) => {
         const AdminRole = req.user.role;
@@ -7,8 +5,7 @@ const verifiedRoles = (allowedRoles) => {
             if (!AdminRole) {
                 throw new Error()
             }
-            const adminRoleName = getAdminRoleName(AdminRole.toString())
-            if (!allowedRoles.includes(adminRoleName)) {
+            if (!allowedRoles.includes(AdminRole)) {
                 throw new Error()
             }
             next();

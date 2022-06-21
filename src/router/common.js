@@ -1,16 +1,14 @@
 const express = require("express");
 const commonRouter = new express.Router();
+const User = require('../models/User');
 const Admin = require('../models/Admin');
 const Doctor = require('../models/Doctor');
-const User = require('../models/User');
-const bcrypt = require('bcryptjs')
-const { getSelectedProperties, sendEmail } = require('../helpers/helpers');
+const Patient = require('../models/Patient');
+const bcrypt = require('bcryptjs');
+const auth = require('../middlewares/auth')
+const { sendEmail } = require('../helpers/helpers');
 const multer = require('multer');
-
-
-
-
-
+const { findByIdAndUpdate } = require("../models/User");
 commonRouter.post('/signup', async (req, res) => {
     const randomNumber = Math.floor(Math.random()) * 999999
     const newUser = new User({ ...req.body, verficationCode: randomNumber });
@@ -30,9 +28,12 @@ commonRouter.post('/signup', async (req, res) => {
                 const newDoctor = new Doctor(body);
                 await newDoctor.save();
                 break;
+            case 3:
+                const newPatient = new Patient(body);
+                await newPatient.save();
+                break
             default:
                 throw new Error("Invalid user type!")
-                break;
         }
         const LIVE_URL = process.env.LIVE_URL;
         const userTypeName = userType === 1 ? 'Admin' : userType === 2 ? 'Doctor' : 'Patient'
@@ -91,7 +92,6 @@ commonRouter.post('/signin', async (req, res) => {
         if (!user[0].isActive) {
             throw new Error("Your account is not activated!")
         }
-
         switch (user[0].userType) {
             case 1:
                 userData = await Admin.adminSignin(user[0]._id)
@@ -99,9 +99,13 @@ commonRouter.post('/signin', async (req, res) => {
             case 2:
                 userData = await Doctor.doctorSignin(user[0]._id)
                 break;
+            case 3:
+                userData = await Patient.patientSignin(user[0]._id);
+                break;
             default:
                 throw new Error()
         }
+
 
         res.status(200).send({ code: 200, data: userData })
     } catch (error) {
@@ -154,6 +158,18 @@ commonRouter.post('/uploadMultiFiles', uploadFile.array('file'), async (req, res
             pathArr.push(file.path)
         })
         res.status(200).send({ code: 200, data: { message: 'File uploaded successfully!', paths: pathArr } })
+    } catch (error) {
+        res.status(400).send({ code: 400, message: error.message })
+    }
+})
+
+commonRouter.post('/logout', auth, async (req, res) => {
+    const newTokenArr = req.user.tokens.filter(token => token !== req.token)
+    try {
+
+        const modelName = req.userType === 0 ? Admin : req.userType === 1 ? Doctor : Patient
+        await modelName.findByIdAndUpdate(req.user._id, { tokens: newTokenArr })
+        res.status(200).send({ code: 200, message: 'Logout Successfully!' })
     } catch (error) {
         res.status(400).send({ code: 400, message: error.message })
     }

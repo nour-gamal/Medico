@@ -6,7 +6,10 @@ const { getSelectedProperties } = require("../helpers/helpers");
 const doctorRouter = new express.Router();
 const verifiedRoles = require("../middlewares/verified_Roles");
 
-doctorRouter.get('/getAllDoctors', auth, verifiedRoles(['Admin', 'Super Admin']), async (req, res) => {
+const _Admin = process.env.Admin
+const Super_Admin = process.env.Super_Admin
+
+doctorRouter.get('/getAllDoctors', auth, verifiedRoles([_Admin, Super_Admin]), async (req, res) => {
     try {
         const doctors = await Doctor.find({})
         const doctorsResponse = []
@@ -20,7 +23,7 @@ doctorRouter.get('/getAllDoctors', auth, verifiedRoles(['Admin', 'Super Admin'])
     }
 })
 
-doctorRouter.patch('/editDoctor', auth, verifiedRoles(['Admin', 'Super Admin']), async (req, res) => {
+doctorRouter.patch('/editDoctor', auth, verifiedRoles([_Admin, Super_Admin]), async (req, res) => {
     try {
         const { _id, ...data } = req.body
         await Doctor.findByIdAndUpdate(_id, data, { new: true })
@@ -30,7 +33,7 @@ doctorRouter.patch('/editDoctor', auth, verifiedRoles(['Admin', 'Super Admin']),
         res.status(400).send({ code: 400, message: error.message })
     }
 })
-doctorRouter.delete('/deleteDoctor', auth, verifiedRoles(['Admin', 'Super Admin']), async (req, res) => {
+doctorRouter.delete('/deleteDoctor', auth, verifiedRoles([_Admin, Super_Admin]), async (req, res) => {
     try {
         const { _id } = req.body
         await Doctor.findByIdAndDelete(_id);

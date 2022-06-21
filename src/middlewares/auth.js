@@ -1,5 +1,6 @@
 const Admin = require('../models/Admin');
 const Doctor = require('../models/Doctor');
+const Patient = require('../models/Patient');
 const jwt = require('jsonwebtoken');
 const auth = async (req, res, next) => {
 	try {
@@ -26,6 +27,13 @@ const auth = async (req, res, next) => {
 				throw new error()
 			}
 			req.user = doctor, req.token = token
+			next()
+		} else if (userType === 3) {
+			const patient = await Patient.findOne({ _id, userType, tokens: token })
+			if (!patient) {
+				throw new error()
+			}
+			req.user = patient, req.token = token, req.userType = userType
 			next()
 		} else {
 			throw new Error()

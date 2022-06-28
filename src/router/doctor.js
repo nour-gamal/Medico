@@ -2,6 +2,7 @@ const express = require("express");
 const Doctor = require("../models/Doctor");
 const auth = require("../middlewares/auth");
 const User = require('../models/User')
+const Availability = require('../models/Availability')
 const { getSelectedProperties } = require("../helpers/helpers");
 const doctorRouter = new express.Router();
 const verifiedRoles = require("../middlewares/verified_Roles");
@@ -39,6 +40,14 @@ doctorRouter.delete('/deleteDoctor', auth, verifiedRoles([_Admin, Super_Admin]),
         await Doctor.findByIdAndDelete(_id);
         await User.findByIdAndDelete(_id);
         res.status(200).send({ code: 200, message: 'Doctor deleted successfully!' })
+    } catch (error) {
+        res.status(400).send({ code: 400, message: error.message })
+    }
+})
+doctorRouter.post('/addAvailability', auth, verifiedRoles(['Doctor']), async (req, res) => {
+    try {
+        await Availability.findByIdAndUpdate(req.user._id, req.body);
+        res.status(200).send({ code: 200, message: "Availability Updated Successfully!" })
     } catch (error) {
         res.status(400).send({ code: 400, message: error.message })
     }

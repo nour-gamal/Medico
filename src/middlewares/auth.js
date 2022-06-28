@@ -26,7 +26,7 @@ const auth = async (req, res, next) => {
 			if (!doctor) {
 				throw new error()
 			}
-			req.user = doctor, req.token = token
+			req.user = doctor, req.token = token, req.userType = userType
 			next()
 		} else if (userType === 3) {
 			const patient = await Patient.findOne({ _id, userType, tokens: token })

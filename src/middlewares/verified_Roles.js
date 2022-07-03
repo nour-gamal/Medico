@@ -5,9 +5,9 @@ const verifiedRoles = (allowedRoles) => {
             // if (!AdminRole) {
             //     throw new Error()
             // }
-            if (!allowedRoles.includes(AdminRole.toString())) {
-                throw new Error()
-            }
+            // if (!allowedRoles.includes(AdminRole.toString())) {
+            //     throw new Error()
+            // }
 
             next();
         } catch (error) {

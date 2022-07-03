@@ -6,7 +6,7 @@ const verifiedRoles = (allowedRoles) => {
                 throw new Error('no role')
             }
             if (!allowedRoles.includes(AdminRole.toString())) {
-                throw new Error('role not')
+                throw new Error(allowedRoles, AdminRole)
             }
 
             next();

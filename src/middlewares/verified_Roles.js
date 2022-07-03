@@ -11,7 +11,7 @@ const verifiedRoles = (allowedRoles) => {
 
             next();
         } catch (error) {
-            res.status(401).send({ code: 401, allowedRoles, AdminRole, message: 'You are not authorized to perform this action!' })
+            res.status(401).send({ code: 401, message: 'You are not authorized to perform this action!' })
         }
     }
 }

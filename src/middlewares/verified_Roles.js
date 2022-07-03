@@ -2,10 +2,9 @@ const verifiedRoles = (allowedRoles) => {
     return (req, res, next) => {
         const AdminRole = req.user.role ? req.user.role : req.userType === 2 ? "Doctor" : "Patient";
         try {
-            console.log(AdminRole, allowedRoles)
-            if (!AdminRole) {
-                throw new Error()
-            }
+            // if (!AdminRole) {
+            //     throw new Error()
+            // }
             if (!allowedRoles.includes(AdminRole.toString())) {
                 throw new Error()
             }

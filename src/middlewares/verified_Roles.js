@@ -3,15 +3,15 @@ const verifiedRoles = (allowedRoles) => {
         const AdminRole = req.user.role ? req.user.role : req.userType === 2 ? "Doctor" : "Patient";
         try {
             if (!AdminRole) {
-                throw new Error('no role')
+                throw new Error()
             }
             if (!allowedRoles.includes(AdminRole.toString())) {
-                throw new Error(allowedRoles, AdminRole)
+                throw new Error()
             }
 
             next();
         } catch (error) {
-            res.status(401).send({ code: 401, message: error.message })
+            res.status(401).send({ code: 401, allowedRoles, AdminRole, message: 'You are not authorized to perform this action!' })
         }
     }
 }
